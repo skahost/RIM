@@ -5,8 +5,9 @@ import Input from '@/components/elements/Input';
 import Label from '@/components/elements/Label';
 import { Button } from '@/components/elements/button/index';
 import { CubeTransparentIcon, DocumentDownloadIcon, PuzzleIcon, SparklesIcon } from '@heroicons/react/outline';
-import { useStoreState } from 'easy-peasy';
+import { Actions, useStoreActions, useStoreState } from 'easy-peasy';
 import { ApplicationStore } from '@/state';
+import { AdvancedSettings, updateAdvanced } from '@/api/admin/Advanced';
 
 const blueprints = [
     { id: 'plugin-installer', name: 'Plugin Installer', description: 'Plugin management blueprint', icon: PuzzleIcon, category: 'installer', key: 'pluginInstaller' as const },
@@ -19,14 +20,39 @@ const blueprints = [
 
 export default () => {
     const [search, setSearch] = useState('');
+    const [isSaving, setIsSaving] = useState(false);
     const extensions = useStoreState((state: ApplicationStore) => state.settings.data!.arix.advanced.extensions);
+    const settings = useStoreState((state: ApplicationStore) => state.settings.data!);
+    const setSettings = useStoreActions((actions: Actions<ApplicationStore>) => actions.settings.setSettings);
 
     const filtered = useMemo(() => blueprints.filter((bp) => bp.name.toLowerCase().includes(search.toLowerCase())), [search]);
 
-    const toggleBlueprint = (key: keyof typeof extensions) => {
-        const next = { ...extensions, [key]: !extensions[key] };
-        // Persist through the existing advanced settings API later if needed.
-        console.log('Blueprint toggled', key, next[key]);
+    const toggleBlueprint = async (key: keyof typeof extensions) => {
+        const nextExtensions = { ...extensions, [key]: !extensions[key] };
+        const nextSettings = {
+            ...settings,
+            arix: {
+                ...settings.arix,
+                advanced: {
+                    ...settings.arix.advanced,
+                    extensions: nextExtensions,
+                },
+            },
+        };
+
+        setSettings(nextSettings);
+        setIsSaving(true);
+
+        const payload: AdvancedSettings = {
+            ...settings.arix.advanced,
+            extensions: nextExtensions,
+        };
+
+        try {
+            await updateAdvanced(payload);
+        } finally {
+            setIsSaving(false);
+        }
     };
 
     return (
@@ -49,7 +75,7 @@ export default () => {
                                         <p className='text-xs uppercase tracking-[0.2em] text-gray-500'>{blueprint.category}</p>
                                     </div>
                                 </div>
-                                <Button.Text size={Button.Sizes.Small} onClick={() => toggleBlueprint(blueprint.key)}>
+                                <Button.Text size={Button.Sizes.Small} onClick={() => void toggleBlueprint(blueprint.key)} disabled={isSaving}>
                                     {enabled ? 'Enabled' : 'Enable'}
                                 </Button.Text>
                             </div>
