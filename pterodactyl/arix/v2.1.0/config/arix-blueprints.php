@@ -1,0 +1,60 @@
+<?php
+
+return [
+    'blueprints' => [
+        [
+            'id' => 'plugin-installer',
+            'name' => 'Plugin Installer',
+            'description' => 'Install server plugins from a curated blueprint catalog.',
+            'category' => 'installer',
+            'route' => '/plugin-installer',
+            'default_enabled' => true,
+            'setting_key' => 'extensions.pluginInstaller',
+        ],
+        [
+            'id' => 'mod-installer',
+            'name' => 'Mod Installer',
+            'description' => 'Install server mods with the same blueprint flow.',
+            'category' => 'installer',
+            'route' => '/mod-installer',
+            'default_enabled' => true,
+            'setting_key' => 'extensions.modInstaller',
+        ],
+        [
+            'id' => 'subdomain-manager',
+            'name' => 'Subdomain Manager',
+            'description' => 'Generate and manage server subdomains from templates.',
+            'category' => 'utility',
+            'route' => '/extensions',
+            'default_enabled' => true,
+            'setting_key' => 'extensions.subdomainManager',
+        ],
+        [
+            'id' => 'motd-maker',
+            'name' => 'MOTD Maker',
+            'description' => 'Create MOTD presets for Minecraft and other servers.',
+            'category' => 'utility',
+            'route' => '/extensions',
+            'default_enabled' => true,
+            'setting_key' => 'extensions.motdMaker',
+        ],
+        [
+            'id' => 'version-changer',
+            'name' => 'Version Changer',
+            'description' => 'Switch a server to an alternate startup version.',
+            'category' => 'utility',
+            'route' => '/extensions',
+            'default_enabled' => true,
+            'setting_key' => 'extensions.versionChanger',
+        ],
+        [
+            'id' => 'auto-suspension',
+            'name' => 'Auto Suspension',
+            'description' => 'Enforce suspension rules after a threshold is met.',
+            'category' => 'utility',
+            'route' => '/extensions',
+            'default_enabled' => true,
+            'setting_key' => 'extensions.autoSuspension',
+        ],
+    ],
+];

@@ -1,0 +1,20 @@
+name: Build and Package SKA Theme
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  package:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Create package
+        run: |
+          mkdir -p dist
+          zip -r dist/ska-theme-package.zip pterodactyl/arix/v2.1.0 README.md install-ska-theme.sh
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ska-theme-package
+          path: dist/ska-theme-package.zip
